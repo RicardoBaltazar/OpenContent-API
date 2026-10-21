@@ -1,0 +1,6 @@
+    FUCNIONALIDADE COMPLETA DE AUTENTICAÇÃO E AUTORIZAÇÃO
+- alem da funcnionalidade comleta de autenticação, criaçãode suarios, também preciso ter niveis para usuarios, como administrador, editor, leitor e autor.
+- acredito que vamos usar laravel polices para gerenciar essas regras.
+- serão cadastro e autenticação de user. recuperação de acesso. gerenciamento d eperfil e ativação/desativação de usuários.
+- vamos isntalar e configurar laravel swaager pois ele será nosso guia de referência para a API.
+- por enquanto somente via api memso, nada alem de isso, mas futuramente podemos pensar em criar novas funcioanldiades.
