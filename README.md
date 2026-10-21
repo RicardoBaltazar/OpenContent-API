@@ -1,58 +1,198 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# OpenContent
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Headless CMS open source, API-first e extensível, desenvolvido para servir como núcleo de gerenciamento de conteúdo para aplicações web, mobile e outros sistemas.
 
-## About Laravel
+O OpenContent não possui um frontend obrigatório. A API é o principal produto do sistema, permitindo que diferentes aplicações consumam e publiquem conteúdo.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Sumário
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- [Sobre o projeto](#sobre-o-projeto)
+- [Funcionalidades](#funcionalidades)
+- [Stack](#stack)
+- [Requisitos](#requisitos)
+- [Instalação](#instalação)
+- [Acessos](#acessos)
+- [Administrador inicial](#administrador-inicial)
+- [Recuperação de senha em desenvolvimento](#recuperação-de-senha-em-desenvolvimento)
+- [Comandos úteis](#comandos-úteis)
+- [Licença](#licença)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Sobre o projeto
 
-## Learning Laravel
+O OpenContent tem como objetivo fornecer uma plataforma genérica para gerenciamento de conteúdo, usuários, mídia e publicação.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+O sistema deve permitir que uma empresa ou desenvolvedor utilize o CMS como backend para diferentes tipos de aplicações, como:
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- sites institucionais;
+- blogs;
+- portais;
+- aplicativos mobile;
+- lojas virtuais;
+- comunidades;
+- plataformas de conteúdo;
+- sistemas internos.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Funcionalidades
 
-## Agentic Development
+### Autenticação
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+- Cadastro público de usuários com papel `leitor`.
+- Login e logout com tokens pessoais do Laravel Sanctum.
+- Bloqueio de usuários inativos.
+- Revogação de tokens no logout, na desativação, na redefinição e na troca de senha.
+
+### Recuperação de senha
+
+- Solicitação de link de redefinição por e-mail.
+- Validação do token de redefinição.
+- Redefinição de senha com revogação de todos os tokens de acesso.
+
+### Perfil
+
+- Visualização do próprio perfil.
+- Atualização de nome e e-mail.
+- Troca de senha com validação da senha atual.
+
+### Usuários
+
+- Listagem administrativa com filtros por nome, e-mail, papel e status.
+- Paginação configurável.
+- Criação, detalhamento e edição de usuários.
+- Ativação e desativação de usuários.
+- Proteção contra rebaixamento ou desativação do último administrador ativo.
+
+### Papéis
+
+- `administrador`
+- `editor`
+- `autor`
+- `leitor`
+
+Nesta versão, apenas o papel `administrador` possui permissões administrativas.
+
+### API e documentação
+
+- API versionada em `/api/v1`.
+- Respostas padronizadas em `data`/`mensagem` e erros em `mensagem`/`errors`.
+- Rate limiting nos endpoints públicos e nas rotas autenticadas.
+- Documentação OpenAPI com Swagger UI.
+- Geração da documentação via `./vendor/bin/sail artisan l5-swagger:generate`.
+
+## Stack
+
+| Camada | Tecnologia |
+| --- | --- |
+| Backend | Laravel 13 / PHP 8.3+ |
+| Banco de dados | PostgreSQL 18 |
+| Cache e filas | Redis |
+| Autenticação | Laravel Sanctum |
+| Documentação | L5-Swagger |
+| Ambiente | Docker + Laravel Sail |
+| Formatação | Laravel Pint |
+
+## Requisitos
+
+- Git.
+- Docker.
+- Docker Compose v2 ou superior.
+
+O PHP e o Composer não precisam estar instalados no host. Caso não tenha Composer localmente, as dependências podem ser instaladas via Docker.
+
+## Instalação
+
+Clone o repositório:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone <url-do-repositorio> opencontent
+cd opencontent
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Crie o arquivo de ambiente:
 
-## Contributing
+```bash
+cp .env.example .env
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Instale as dependências do Composer via Docker:
 
-## Code of Conduct
+```bash
+docker run --rm \
+  -u "$(id -u):$(id -g)" \
+  -e COMPOSER_HOME=/tmp/composer \
+  -v "$(pwd):/app" \
+  -w /app \
+  composer:2 install --no-interaction --prefer-dist
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Suba os containers:
 
-## Security Vulnerabilities
+```bash
+./vendor/bin/sail up -d
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Gere a chave da aplicação:
 
-## License
+```bash
+./vendor/bin/sail artisan key:generate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Execute as migrations:
+
+```bash
+./vendor/bin/sail artisan migrate
+```
+
+Configure o administrador inicial no `.env`:
+
+```dotenv
+ADMIN_NAME="Administrador"
+ADMIN_EMAIL=admin@exemplo.com
+ADMIN_PASSWORD=uma-senha-segura
+```
+
+Crie o administrador:
+
+```bash
+./vendor/bin/sail artisan db:seed
+```
+
+O seeder cria o administrador somente quando `ADMIN_EMAIL` e `ADMIN_PASSWORD` estiverem preenchidos e não sobrescreve a senha de um usuário já existente.
+
+## Acessos
+
+Com `APP_PORT=8000`:
+
+- API: `http://localhost:8000/api/v1`
+- Swagger UI: `http://localhost:8000/api/documentation`
+- JSON OpenAPI: `http://localhost:8000/docs`
+
+## Administrador inicial
+
+O administrador inicial é criado pelo seeder a partir das variáveis `ADMIN_NAME`, `ADMIN_EMAIL` e `ADMIN_PASSWORD` definidas no `.env`.
+
+Mantenha o arquivo `.env` fora do versionamento e não utilize as credenciais de exemplo em produção.
+
+## Recuperação de senha em desenvolvimento
+
+O ambiente de desenvolvimento usa `MAIL_MAILER=log`. O link de redefinição é gravado em `storage/logs/laravel.log`.
+
+Para acompanhar os logs:
+
+```bash
+./vendor/bin/sail artisan pail
+```
+
+## Comandos úteis
+
+```bash
+./vendor/bin/sail up -d
+./vendor/bin/sail down
+./vendor/bin/sail artisan route:list --path=api
+./vendor/bin/sail artisan l5-swagger:generate
+./vendor/bin/sail bin pint
+./vendor/bin/sail artisan test
+```
+
+## Licença
+
+Este projeto está licenciado sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
