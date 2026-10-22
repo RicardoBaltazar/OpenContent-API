@@ -9,3 +9,11 @@
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore
+
+# Ignorar JavaScript e TypeScript antigos na contagem de linguagens do GitHub
+*.js linguist-vendored
+*.ts linguist-vendored
+*.tsx linguist-vendored
+*.jsx linguist-vendored
+node_modules/* linguist-vendored
+public/build/* linguist-vendored
